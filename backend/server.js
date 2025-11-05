@@ -14,11 +14,19 @@ app.use(express.json({ limit: '20mb' }));
 app.use(cookieParser());
 
 const allowedOrigins = [
-  'http://localhost:3000', // Your local frontend
-  'https://cnd-project-frontend.onrender.com' // Your deployed frontend
+  "https://medai-glsh-frontend.onrender.com", // <-- your frontend URL on Render
+  "http://localhost:3000"
 ];
 
-app.use(cors({ origin: allowedOrigins, credentials: true }));
+app.use(cors({
+  origin: function (origin, callback) {
+    // allow requests with no origin like mobile apps or curl
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
+}));
 
 app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 
