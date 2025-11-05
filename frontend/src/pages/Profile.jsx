@@ -8,10 +8,12 @@ import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../hooks/use-toast";
 import LogoSpinner from "../components/LogoSpinner";
+import { useAuth } from '../context/AuthContext';
 
 const Profile = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { apiBase, isAuthenticated } = useAuth();
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
@@ -27,8 +29,16 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const apiUrl = process.env.REACT_APP_API_URL || "";
-        const res = await fetch(`${apiUrl}/api/profile`, { credentials: "include" });
+        if (!isAuthenticated) {
+          navigate("/login");
+          return;
+        }
+        const res = await fetch(`${apiBase}/api/profile`, {
+          credentials: "include",
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
         if (res.status === 401) {
           navigate("/login");
           return;
@@ -95,8 +105,7 @@ const Profile = () => {
         const base64String = reader.result;
 
         // Update profile picture on backend
-        const apiUrl = process.env.REACT_APP_API_URL || "";
-        const res = await fetch(`${apiUrl}/api/profile`, {
+        const res = await fetch(`${apiBase}/api/profile`, {
           method: "PUT",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
