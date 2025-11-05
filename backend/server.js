@@ -15,14 +15,13 @@ const allowedOrigins = [
   "http://localhost:3000"                      // ✅ for local testing
 ];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true); // allow mobile/curl
-    if (allowedOrigins.includes(origin)) return callback(null, true);
-    return callback(new Error("Not allowed by CORS"));
-  },
-  credentials: true, // ✅ allow sending cookies
-}));
+app.use(
+  cors({
+    origin: "https://cnd-project-frontend.onrender.com",
+    credentials: true,
+  })
+);
+
 app.use(express.json({ limit: '20mb' }));
 app.use(cookieParser());
 
