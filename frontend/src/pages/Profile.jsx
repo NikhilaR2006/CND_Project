@@ -7,11 +7,10 @@ import { Camera, Mail, Building, MapPin } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../hooks/use-toast";
-import { useAuth } from "../context/AuthContext";
 import LogoSpinner from "../components/LogoSpinner";
 
 const Profile = () => {
-  const { toast } = useToast();  const { apiBase } = useAuth();
+  const { toast } = useToast();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -28,16 +27,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const token = localStorage.getItem('token');
-        const headers = { 'Content-Type': 'application/json' };
-        if (token) {
-          headers['Authorization'] = `Bearer ${token}`;
-        }
-        const res = await fetch(`${apiBase}/api/profile`, {
-          credentials: "include",
-          headers,
-        });
-
+        const res = await fetch("/api/profile", { credentials: "include" });
         if (res.status === 401) {
           navigate("/login");
           return;
@@ -65,7 +55,7 @@ const Profile = () => {
     };
 
     fetchProfile();
-  }, [navigate, toast, apiBase]);
+  }, [navigate, toast]);
 
   const handlePhotoClick = () => {
     fileInputRef.current?.click();
@@ -104,7 +94,7 @@ const Profile = () => {
         const base64String = reader.result;
 
         // Update profile picture on backend
-        const res = await fetch(`${apiBase}/api/profile`, {
+        const res = await fetch("/api/profile", {
           method: "PUT",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
