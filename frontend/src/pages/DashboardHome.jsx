@@ -22,9 +22,7 @@ const DashboardHome = () => {
   const fetchCategoryCounts = async () => {
     try {
       const response = await fetch(`${apiBase}/api/analysis/category-counts`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
       });
       if (response.ok) {
@@ -49,9 +47,7 @@ const DashboardHome = () => {
   const fetchRecentActivity = async () => {
     try {
       const response = await fetch(`${apiBase}/api/analysis/history?limit=3`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
       });
 

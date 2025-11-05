@@ -30,9 +30,7 @@ const Profile = () => {
       try {
         const res = await fetch(`${apiBase}/api/profile`, {
           credentials: "include",
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+          headers: { 'Content-Type': 'application/json' },
         });
         if (res.status === 401) {
           navigate("/login");
@@ -103,10 +101,7 @@ const Profile = () => {
         const res = await fetch(`${apiBase}/api/profile`, {
           method: "PUT",
           credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             profile_picture: base64String,
           }),

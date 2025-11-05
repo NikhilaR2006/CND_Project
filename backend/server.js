@@ -60,12 +60,12 @@ app.post('/api/auth/register', async (req, res) => {
     if (USE_JWT) {
       const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
       res.cookie('token', token, { httpOnly: true, sameSite: 'lax' });
-      return res.json({ token, user: { id: user._id, email: user.email, fullName: user.fullName } });
+      // Remove token from response body, rely on httpOnly cookie
+      return res.json({ user: { id: user._id, email: user.email, fullName: user.fullName } });
     }
 
     // If not using JWT, set a readable cookie with the user email to identify the session
     res.cookie('user_email', user.email, { httpOnly: false, sameSite: 'lax' });
-    return res.json({ user: { id: user._id, email: user.email, fullName: user.fullName } });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: 'Server error' });
@@ -92,7 +92,8 @@ app.post('/api/auth/login', async (req, res) => {
     if (USE_JWT) {
       const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
       res.cookie('token', token, { httpOnly: true, sameSite: 'lax' });
-      return res.json({ token, user: { id: user._id, email: user.email, fullName: user.fullName } });
+      // Remove token from response body
+      return res.json({ user: { id: user._id, email: user.email, fullName: user.fullName } });
     }
 
     res.cookie('user_email', user.email, { httpOnly: false, sameSite: 'lax' });

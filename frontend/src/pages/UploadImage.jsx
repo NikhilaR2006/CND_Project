@@ -55,9 +55,7 @@ const UploadImage = () => {
       try {
         const response = await fetch(`${nodeBase}/api/profile`, {
           credentials: 'include',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+          headers: { 'Content-Type': 'application/json' },
         });
         
         if (response.ok) {
@@ -253,8 +251,8 @@ const UploadImage = () => {
             const saveRes = await fetch(`${nodeBase}/api/analysis/upload`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(saveBody),
-              credentials: 'include'
+              credentials: 'include',
+              body: JSON.stringify(saveBody)
             });
             
             console.log('Save response status:', saveRes.status);
@@ -404,10 +402,7 @@ const UploadImage = () => {
         if (nodeBase) {
           const saveRes = await fetch(`${nodeBase}/api/analysis/upload`, {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
+            headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
             body: JSON.stringify(saveBody)
           });

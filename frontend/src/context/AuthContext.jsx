@@ -31,18 +31,8 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuthStatus = async () => {
     try {
-      // Try a silent auth check with the server. We DO NOT bail out early when there's no
-      // token in localStorage because the server may be using httpOnly cookies for auth.
-      const token = localStorage.getItem('token');
-
-      const headers = { 'Content-Type': 'application/json' };
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
-
-      // Keep loading=true until the server responds so ProtectedRoute doesn't redirect on refresh
       const response = await fetch(`${apiBase}/api/auth/me`, {
-        headers,
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
       });
 
@@ -52,26 +42,24 @@ export const AuthProvider = ({ children }) => {
           setUser(data.user);
           setIsAuthenticated(true);
         } else {
-          // No user data; clear any stale token but remain unauthenticated
-          localStorage.removeItem('token');
+          // No user data, treat as unauthenticated
           setUser(null);
           setIsAuthenticated(false);
         }
-      } else {
-        // 401/403 or other client error - clear token and mark unauthenticated
-        localStorage.removeItem('token');
+      } else if (response.status === 401 || response.status === 403) {
+        // Unauthorized, ensure state is cleared
         setUser(null);
         setIsAuthenticated(false);
       }
     } catch (error) {
       console.error('Auth check failed:', error);
-      // On network error, don't aggressively clear UI; treat as unauthenticated but keep UX stable
       setUser(null);
       setIsAuthenticated(false);
     } finally {
       setLoading(false);
     }
   };
+
 
   const login = async (email, password) => {
     try {
@@ -86,9 +74,6 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json().catch(() => ({}));
 
       if (response.ok && data.user) {
-        if (data.token) {
-          localStorage.setItem('token', data.token);
-        }
         setUser(data.user);
         setIsAuthenticated(true);
         toast({
@@ -166,7 +151,6 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
-      localStorage.removeItem('token');
       setUser(null);
       setIsAuthenticated(false);
       navigate('/login');

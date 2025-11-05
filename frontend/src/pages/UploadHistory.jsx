@@ -26,9 +26,7 @@ const UploadHistory = () => {
       setRefreshing(page > 1);
       
       const response = await fetch(`${apiBase}/api/analysis/history?page=${page}&limit=${pagination.limit}`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
       });
 

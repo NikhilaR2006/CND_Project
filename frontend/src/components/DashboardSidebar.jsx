@@ -26,10 +26,10 @@ const DashboardSidebar = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const token = localStorage.getItem('token');
-        const headers = { 'Content-Type': 'application/json' };
-        if (token) headers['Authorization'] = `Bearer ${token}`;
-  const res = await fetch(`${apiBase}/api/auth/me`, { credentials: "include", headers });
+        const res = await fetch(`${apiBase}/api/auth/me`, {
+          credentials: "include",
+          headers: { 'Content-Type': 'application/json' },
+        });
         if (res.status === 401) {
           // Not authenticated; rely on ProtectedRoute to guard access.
           setProfile(null);

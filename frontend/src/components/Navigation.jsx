@@ -4,21 +4,28 @@ import { Button } from '../components/ui/button';
 import { Menu, X } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
+import { useAuth } from '../context/AuthContext';
+
 const Navigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [profile, setProfile] = useState(null);
+  const { isAuthenticated, apiBase } = useAuth();
 
   useEffect(() => {
-    // Only fetch if not on login page
-    if (location.pathname !== '/login') {
-      fetch('/api/profile', { credentials: 'include' })
-        .then(res => res.ok ? res.json() : null)
-        .then(data => setProfile(data))
-        .catch(() => setProfile(null));
+    const fetchProfile = async () => {
+      if (isAuthenticated && location.pathname !== '/login') {
+        const res = await fetch(`${apiBase}/api/auth/me`, { // Use /api/auth/me which is more standard
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include'
+        });
+        if (res.ok) setProfile(await res.json());
+        else setProfile(null);
+      }
     }
-  }, [location.pathname]);
+    fetchProfile();
+  }, [location.pathname, isAuthenticated, apiBase]);
 
   const navItems = [
     { label: 'About', href: '/about' },
