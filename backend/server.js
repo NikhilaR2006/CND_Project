@@ -12,7 +12,14 @@ const Analysis = require('./models/Analysis');
 const app = express();
 app.use(express.json({ limit: '20mb' }));
 app.use(cookieParser());
-app.use(cors({ origin: true, credentials: true }));
+
+const allowedOrigins = [
+  'http://localhost:3000', // Your local frontend
+  'https://cnd-project-frontend.onrender.com' // Your deployed frontend
+];
+
+app.use(cors({ origin: allowedOrigins, credentials: true }));
+
 app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 
 const MONGO_URI = process.env.MONGO_URI;

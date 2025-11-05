@@ -17,15 +17,8 @@ const UploadHistory = () => {
   const [pagination, setPagination] = useState({ page: 1, limit: 15, total: 0, pages: 0 });
   const [selectedAnalysis, setSelectedAnalysis] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
-  const { user } = useAuth();
+  const { user, apiBase } = useAuth();
   const { toast } = useToast();
-
-  // Resolve API base URL
-  const apiBase = (process.env.REACT_APP_API_URL && process.env.REACT_APP_API_URL.trim())
-    ? process.env.REACT_APP_API_URL.trim()
-    : (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-      ? 'https://medai-glsh.onrender.com'
-      : '';
 
   const fetchHistory = async (page = 1) => {
     try {

@@ -21,13 +21,7 @@ const DashboardSidebar = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [profile, setProfile] = useState(null);
-  const { logout } = useAuth();
-  // Resolve API base URL
-  const apiBase = (process.env.REACT_APP_API_URL && process.env.REACT_APP_API_URL.trim())
-    ? process.env.REACT_APP_API_URL.trim()
-    : (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-      ? 'http://localhost:5000'
-      : '';
+  const { logout, apiBase } = useAuth();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -57,7 +51,7 @@ const DashboardSidebar = () => {
       }
     };
     fetchProfile();
-  }, [navigate, toast]);
+  }, [navigate, toast, apiBase]);
 
   const handleLogout = async () => {
     // Delegate to AuthContext to ensure global auth state is cleared consistently

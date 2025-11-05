@@ -42,18 +42,12 @@ const UploadImage = () => {
   });
   
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user, apiBase: nodeBase } = useAuth();
 
   // Flask backend runs on port 5001
   const flaskBase = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
     ? 'http://localhost:5001'
     : 'http://localhost:5001'; // Update if deployed elsewhere
-  // Node backend for history (port 5000)
-  const nodeBase = (process.env.REACT_APP_API_URL && process.env.REACT_APP_API_URL.trim())
-    ? process.env.REACT_APP_API_URL.trim()
-    : (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-      ? 'https://medai-glsh.onrender.com'
-      : '';
 
   // Auto-fill referring doctor from user profile
   useEffect(() => {
@@ -256,7 +250,7 @@ const UploadImage = () => {
               diagnosis: saveBody.results.diagnosis
             });
             
-            const saveRes = await fetch('/api/analysis/upload', {
+            const saveRes = await fetch(`${nodeBase}/api/analysis/upload`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(saveBody),

@@ -9,7 +9,7 @@ import { cn } from "../utils/cn";
 
 const DashboardHome = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, apiBase } = useAuth();
   const [stats, setStats] = useState({
     todayCount: 0,
     totalCount: 0,
@@ -17,13 +17,6 @@ const DashboardHome = () => {
     neuroCount: 0
   });
   const [recentActivity, setRecentActivity] = useState([]);
-
-  // Resolve API base URL
-  const apiBase = (process.env.REACT_APP_API_URL && process.env.REACT_APP_API_URL.trim())
-    ? process.env.REACT_APP_API_URL.trim()
-    : (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-      ? 'https://medai-glsh.onrender.com'
-      : '';
 
   // Fetch counts for dashboard stats
   const fetchCategoryCounts = async () => {

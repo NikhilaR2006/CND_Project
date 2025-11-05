@@ -22,9 +22,7 @@ export const AuthProvider = ({ children }) => {
   // Resolve API base URL
   const apiBase = (process.env.REACT_APP_API_URL && process.env.REACT_APP_API_URL.trim())
     ? process.env.REACT_APP_API_URL.trim()
-    : (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-      ? 'http://localhost:5000'
-      : '';
+    : 'https://medai-glsh.onrender.com';
 
   // Check authentication status on app load
   useEffect(() => {
@@ -187,6 +185,7 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     checkAuthStatus,
+    apiBase,
   };
 
   return (
