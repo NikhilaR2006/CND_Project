@@ -10,21 +10,30 @@ const User = require('./models/User');
 const Analysis = require('./models/Analysis');
 
 const app = express();
-const allowedOrigins = [
-  "https://cnd-project-frontend.onrender.com", // ✅ your deployed frontend
-  "http://localhost:3000"                      // ✅ for local testing
-];
 
 app.use(
   cors({
-    origin: "https://cnd-project-frontend.onrender.com",
+    origin: [
+      "https://cnd-project-frontend.onrender.com",
+      "http://localhost:3000"
+    ],
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
+
 app.use(express.json({ limit: '20mb' }));
 app.use(cookieParser());
-
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://cnd-project-frontend.onrender.com");
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  if (req.method === "OPTIONS") return res.sendStatus(204);
+  next();
+});
 
 app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 
