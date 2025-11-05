@@ -28,10 +28,16 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
+        const token = localStorage.getItem('token');
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
         const res = await fetch(`${apiBase}/api/profile`, {
           credentials: "include",
-          headers: { 'Content-Type': 'application/json' },
+          headers,
         });
+
         if (res.status === 401) {
           navigate("/login");
           return;
