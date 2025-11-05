@@ -59,7 +59,13 @@ app.post('/api/auth/register', async (req, res) => {
 
     if (USE_JWT) {
       const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
-      res.cookie('token', token, { httpOnly: true, sameSite: 'lax' });
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: true,              // needed for Render HTTPS
+        sameSite: "none",          // allows cross-site cookies
+        maxAge: 7 * 24 * 60 * 60 * 1000
+      });
+
       // Remove token from response body, rely on httpOnly cookie
       return res.json({ user: { id: user._id, email: user.email, fullName: user.fullName } });
     }
@@ -91,7 +97,13 @@ app.post('/api/auth/login', async (req, res) => {
 
     if (USE_JWT) {
       const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
-      res.cookie('token', token, { httpOnly: true, sameSite: 'lax' });
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: true,              // needed for Render HTTPS
+        sameSite: "none",          // allows cross-site cookies
+        maxAge: 7 * 24 * 60 * 60 * 1000
+      });
+
       // Remove token from response body
       return res.json({ user: { id: user._id, email: user.email, fullName: user.fullName } });
     }
